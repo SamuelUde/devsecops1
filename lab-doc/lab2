@@ -1,0 +1,56 @@
+Which of the following options are part of Continuous Integration?
+Database Integration, Unit Tests, Development and Compilation
+Can we run unit tests as a part of a Jenkins pipeline?
+Yes
+Docker containerd is a core container runtime that manages:
+The entire container lifecycle on a Linux or Windows host system.
+What is a microservice?
+An architecture in which a single application is composed of many loosely coupled and independently deployable smaller services.
+Try to build the devsecops-numeric-application Jenkins job and make sure the existing pipeline works fine.
+CheckCompleteIncomplete:
+Unit tests are working fine?
+Jacoco reports are working fine?
+The build might fail because there are some missing plugins. Install the below plugins from the Jenkins UI and try to build again.
+a. JUnit
+b. Jacoco
+There is a Dockerfile under the root of the repository which we will use to build an image for this spring boot application. Append the Jenkinsfile to add another stage to build a docker image for this application.
+
+The image name should be docker-registry:5000/java-app and the tag should be latest.
+Notes:
+Docker is already installed on the Jenkins server.
+Before hitting the Check button, please make sure that the latest build for devsecops-numeric-application job has passed.
+CheckCompleteIncomplete
+Docker build stage is working fine?
+Built the required Docker image?
+pipeline {
+  agent any
+
+  stages {
+
+    stage('Build Artifact - Maven') {
+      steps {
+        sh "mvn clean package -DskipTests=true"
+        archive 'target/*.jar'
+      }
+    }
+
+    stage('Unit Tests - JUnit and Jacoco') {
+      steps {
+        sh "mvn test"
+      }
+      post {
+        always {
+          junit 'target/surefire-reports/*.xml'
+          jacoco execPattern: 'target/jacoco.exec'
+        }
+      }
+    }
+
+    stage('Docker image build and push') {
+      steps {
+        sh 'docker build -t docker-registry:5000/java-app:latest .'
+      }
+    }
+  }
+} 
+Make sure to push your changes to the origin.
