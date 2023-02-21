@@ -56,16 +56,21 @@ sleep 60
 
 echo "untaint controlplane node"
 # kubectl taint node $(kubectl get nodes -o=jsonpath='{.items[].metadata.name}')  node-role.kubernetes.io/master-
-# kubectl get node -o wide
-# Please check the taints on the master node.
 
-kubectl get nodes
+# Get the cluster info using the following command.
+# kubectl cluster-info 
+
+# Verify all the cluster component health statuses using the following command.
+# kubectl get --raw='/readyz?verbose'
+
+# Please check the taints on the master node.
+# Get the node-name
+kubectl get node -o wide
 
 # Then fetch the applied/default taint.
+# kubectl describe node <node-name> | grep -i taint
 
-kubectl describe node <node-name> | grep -i taint
 # Then add a minus sign at the end of the taint to remove the applied/default taint.
-
 # kubectl taint node <node-name> <taint>-
 
 
